@@ -1,0 +1,11 @@
+{
+  "name": "cypress-course",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:danjarosz/cypress-course.git",
+  "author": "Daniel Jarosz <jarosz.daniel@protonmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "prettier": "^2.5.1"
+  }
+}
