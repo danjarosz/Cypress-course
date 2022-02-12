@@ -5,6 +5,7 @@ describe("Locators", () => {
     cy.visit("/elements");
   });
 
+  // GET
   it("should locating elements with get", () => {
     // Get all elements by tag name
     cy.get("button");
@@ -25,7 +26,7 @@ describe("Locators", () => {
     // Get all elements by tag name AND class
     cy.get("button.Elements-btn");
 
-    // Gel all elements by tag name AND class AND id
+    // Get all elements by tag name AND class AND id
     cy.get("button.Elements-btn#btn-with-id");
 
     // Get all elements by tag name AND class AND type attribute
@@ -36,5 +37,19 @@ describe("Locators", () => {
     cy.get("[data-cy='btn-id-1']");
     // using custom function defined in cypress/support/commands.js
     cy.getByTestId("btn-id-1");
+  });
+
+  // CONTAINS - it selects only one element
+  it("should location elements with contains", () => {
+    // Get element by text
+    cy.contains("Unique Text");
+
+    // Get element by not unique text
+    cy.contains("Not Unique Text"); // returns only the first element that matches
+
+    // With selector
+    cy.contains("[type='submit']", "Not Unique Text");
+    cy.contains("form", "Not Unique Text");
+    cy.get("[type='submit']").contains("Not Unique Text");
   });
 });
