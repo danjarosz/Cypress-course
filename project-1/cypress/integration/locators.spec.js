@@ -52,4 +52,10 @@ describe("Locators", () => {
     cy.contains("form", "Not Unique Text");
     cy.get("[type='submit']").contains("Not Unique Text");
   });
+
+  // FIND - requires parent element
+  it("locating element with find", () => {
+    cy.get("#form-1").find(".btn-1");
+    cy.get("#form-1").find(".btn-2");
+  });
 });
