@@ -1,48 +1,37 @@
 /// <reference types="cypress" />
 
-describe("Accomplishment Dashboard", () => {
+describe("Accomplishment Dashboard - real request", () => {
   beforeEach(() => {
     cy.visit("/accomplishments");
   });
-  it("should showcase error if information is missing", () => {
-    cy.get("[data-cy='accomplishment-title-input']").type(
-      "My Basketball Accomplishment"
-    );
-    cy.get("[data-cy='accomplishment-input']").type(
-      "I made 10 threes in a row"
-    );
-    cy.contains("Submit Accomplishment").click();
-    cy.contains("Complete the items above to continue").should("be.visible");
+  it("should display inappropiate content error when text or accomplish includes gireffe", () => {
+    cy.get("[placeholder='Title']").type("THis is my accomplishment");
+    cy.get("[placeholder='My accomplishment...']").type("I pet a giraffe");
+    cy.get('[data-cy="accomplishment-checkbox"]').click();
+    cy.get("button").click();
+    cy.contains("Your content is not appropriate").should("be.visible");
+  });
+});
+
+describe("Accomplishment Dashboard - mocked response", () => {
+  beforeEach(() => {
+    cy.intercept("POST", "http://localhost:4000", (req) => {
+      req.reply((res) => {
+        res.send({
+          msg: "Your content is not appropriate",
+        });
+      });
+    }).as("sendInappropiateAccomplishment");
+
+    cy.visit("/accomplishments");
   });
 
-  it("should display validation component if all information is input", () => {
-    cy.get("[data-cy='accomplishment-title-input']").type(
-      "My Basketball Accomplishment"
-    );
-    cy.get("[data-cy='accomplishment-input']").type(
-      "I made 10 threes in a row"
-    );
-    cy.get("[data-cy='accomplishment-checkbox']").click();
-    cy.contains("Submit Accomplishment").click();
-    cy.contains("This Accomplisment was Successfully Submitted").should(
-      "be.visible"
-    );
-  });
-
-  it("should return back to accomplishment dashboard with empty inputs when 'Go Back' button is clicked", () => {
-    cy.get("[data-cy='accomplishment-title-input']").type(
-      "My Basketball Accomplishment"
-    );
-    cy.get("[data-cy='accomplishment-input']").type(
-      "I made 10 threes in a row"
-    );
-    cy.get("[data-cy='accomplishment-checkbox']").click();
-    cy.contains("Submit Accomplishment").click();
-    cy.contains("Go Back").click();
-
-    cy.contains("h2", "Accomplishment").should("be.visible");
-    cy.get("[data-cy='accomplishment-title-input']").should("have.value", "");
-    cy.get("[data-cy='accomplishment-input']").should("have.value", "");
-    cy.get("[data-cy='accomplishment-checkbox']").should("not.be.checked");
+  it("should display inappropiate content error when text or accomplish includes giraffe (mock response)", () => {
+    cy.get("[placeholder='Title']").type("THis is my accomplishment");
+    cy.get("[placeholder='My accomplishment...']").type("I pet a giraffe");
+    cy.get('[data-cy="accomplishment-checkbox"]').click();
+    cy.get("button").click();
+    cy.wait("@sendInappropiateAccomplishment");
+    cy.contains("Your content is not appropriate").should("be.visible");
   });
 });
